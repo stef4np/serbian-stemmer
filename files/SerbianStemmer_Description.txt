@@ -1,74 +1,64 @@
 Serbian Stemmer - The Stemming Algorithm
 ##################################################################
 
-Serbian language is a Slavic language (Indo-European), of the South Slavic subgroup. It is highly inflected and uses similar rules for morphological 
-derivation and flexion as other Slavic languages, especially ones derived from the Serbo-Croatian language used in the former Yugoslavia.
-Because of this characteristic (high inflection) stemmer for Serbian language will have much more rules then stemmers for less inflectional languages. 
+The Serbian language is a Slavic language (Indo-European) of the South Slavic subgroup. It is highly inflected and uses similar rules for morphological derivation and flexion as other Slavic languages, especially ones derived from the Serbo-Croatian language used in the former Yugoslavia. Because of this highly inflected characteristic a stemmer for Serbian language will have many more rules then stemmers for less inflected languages.
+Serbian Stemmer described in this document is based on the Croatian Stemmer which is published under the GNU Lesser General Public License. Mark Regions, Morphological Changes (Step_1) and Stemming (Step_2) routines are based on the Croatian Stemming Algorithm. In addition, some of the existing rules for Morphological Changes and Stemming (Step_1 and Step_2 among lists) have been modified and new rules have been added for the needs of the Serbian Stemmer.
 
-Serbian Stemmer described in this document is based on Croatian Stemmer available here [http://nlp.ffzg.hr/resources/tools/stemmer-for-croatian].
-The existing rules have been modified and new rules have been added for the needs of the Serbian Stemmer.
+Latin alphabet in Serbian includes the following letters with diacritics:
 
+    č   ć   đ   š   ž 
 
+The following letters are vowels:
+
+    a   e   i   o   u 
+
+There is also letter - r - that isn't a vowel but it is sometimes used for syllabification.
 Main Routines of Serbian Stemming Algorithm are:
-    
+
 1. Conversion of Cyrillic alphabet to Latin alphabet
 
-Serbian language use both Cyrillic and Latin alphabets, but Latin alphabet is what most people use these days on their PCs, Phones, etc. This algorithm
-is developed mostly for the purposes of the Information Retreival, therefor the first thing it does is to convert Cyrillic letters to Latin.
-
-Latin alphabet in Serbian include the following letters with diacritics: č, ć, đ, š, ž
-Тhe following letters are vowels: a, e, i, o, u. 
-There is also letter - r - that isn't a vowel but it is sometimes used for syllabification.
-
+	The Serbian language uses both Cyrillic and Latin alphabets, but these days most people use the Latin alphabet on their PCs, Phones, etc. This algorithm is developed mostly for the purposes of the Information Ret	rieval, therefore the first thing it does is to convert Cyrillic letters to Latin.
 
 2. Prelude
 
-In Serbian language there are two dialects: Ekavian and Ijekavian. For example words:
-    - senka (Ekavian)
-    - sjenka (Ijekavian)
-    - sijenka (Ijekavian)
-have the same meaning (Shadow) but are spelled differently and because the mostly used dialect in Serbia is Ekavian the next thing to do is to replace
-Ijekavian dialect with it.
+    In Serbian language there are two dialects: Ekavian and Ijekavian. For example words:
+        senka (Ekavian)
+        sjenka (Ijekavian) 
+    have the same meaning (Shadow), also words:
+        mleko (Ekavian)
+        mlijeko (Ijekavian) 
+    have the same meaning (Milk) but are spelled differently and because mostly used dialect in Serbia is Ekavian the next thing to do is to replace Ijekavian dialect with it.
 
-It is also common, although not valid, these days to use combination of letters "d" and "j" instead of a single letter "đ". For example people will more 
-often write "novak djoković" instead of "novak đoković" and because this algorithm is developed with Information Retreival in mind they should be treated
-as the same terms.
-
+    These days it is also common, although not valid, to use combination of letters "d" and "j" instead of a single letter "đ". For example people will more often write "Novak Djoković" instead of "Novak Đoković" and because this algorithm is developed with Information Retrieval in mind they should be treated as the same terms.
 
 3. Mark Regions
 
-R1 is either:
-    I)   a region after the first vowel if there are at least two letters outside of it, otherwise it is a region after the first non-vowel following a vowel,
-    II)  a region after the first "r" if there are at least two letters outside of it, otherwise it is a region after the first non-"r" following an "r".
-In Serbian language there are some words in which "r" letter is used for syllabification and in such words vowels can appear at the very end - for example
-word "grmlje".
-So before algorithm decide what will R1 be, it needs to look if and where "r" letter occure and where is the first vowel. If it finds "r" that occured
-before the first vowel and there is at least one letter between them this means that "r" is used for syllabification and R1 is II, otherwise R1 is I.
-For example: 
-    * "tr|go|va|čki" - in this word "tr" is the first syllable which means that "r" is used for syllabification and the R1 = "govački"
-    * "tre|ne|rka"   - in this word there is an "r" before the first vowel but there isn't any letters between them which means that "r" isn't used for syllabification
-                       and the R1 = "nerka".
-    * "r|ta|njski"   - in this word "r" is the first syllable but if we use "tanjski" as R1 it won't left enough letters outside of it, so we need to shrink it down to a region
-                       after the first non-"r" following an "r" which is in this case = "anjski".
-    * "a|vi|on"      - similar to the previous case but with vowel instead of an "r".
+    R1 is:
+        a region after the first vowel if there are at least two letters outside of it, otherwise it is a region after the first non-vowel following a vowel,
+        a region after the first "r" if there are at least two letters outside of it, otherwise it is a region after the first non-"r" following an "r". 
+		a whole word if any of the previous two cases isn't fullfiled (typos, acronims).
 
-R2 isn't really a region, it is more a test routine that is used to check for letters with diacritics and is used later to apply certain rules in stemming.
-It is used because people these days tend to use letters without diacritics (instead of the proper ones with diacritics) and we need to take this into account also.
+    In Serbian language there are some words in which "r" letter is used for syllabification and in such words vowels can appear at the very end - for example word "grmlje".
 
-        
+    So before algorithm decide what will R1 be, it needs to look if and where "r" letter occurs and where is the first vowel. If it finds "r" that occurred before the first vowel and there is at least one letter between them this means that "r" is used for syllabification and R1 is 2), otherwise R1 is 1).
+
+    For example:
+        "tr|go|va|čki" - in this word "tr" is the first syllable which means that "r" is used for syllabification and R1 = "govački"
+        "tre|ne|rka" - in this word there is an "r" before the first vowel but there isn't any letters between them which means that "r" isn't used for syllabification and R1 = "nerka".
+        "r|ta|njski" - in this word "r" is the first syllable but if we use "tanjski" as R1 it won't left enough letters outside of it, so we need to shrink it down to a region after the first non-"r" following an "r" which is in this case = "anjski".
+        "a|vi|on" - similar to the previous case but with a vowel instead of an "r". 
+    R2 isn't really a region, it is more a test routine that is used to check for letters with diacritics and is used later to apply certain rules in stemming. It is used because people these days tend to use letters without diacritics (instead of the proper ones with diacritics) and we need to take this into account also.
+
 4. Morphological Changes
 
-Very last thing to do, before any stemming is done, are morphological changes. These changes are applied in order to get same stems for a different forms of a word.
-For example words:
-    * "pravilan" (Masculine, Singular)
-    * "pravilna" (Feminine, Singular)
-    * "pravilno" (Neuter, Singular)
-should have the same stem.
-To get that result algorithm will first change word "pravilan" (Masculine, Singular) to "pravilni" (Masculine, Plural) and after that the word will be stemmed.
+    Very last thing to do, before any stemming is done, are morphological changes. These changes are applied so we get the same stems for different forms of a word.
 
+    For example words:
+        "pravilan" (Masculine, Singular)
+        "pravilna" (Feminine, Singular)
+        "pravilno" (Neuter, Singular) 
+    should have the same stem. To get that result the algorithm will first change word "pravilan" (Masculine, Singular) to "pravilni" (Masculine, Plural) and after that the word will be stemmed.
 
 5. Stemming
 
-There are two steps for stemming, first one contains most of the rules and is the primary stemming routine and the second one will try to stem the word only if the first one
-failed to do so, whether it was because there were no rules that could be applied or the rule overlapped the R1 region. Second step contains a few rules that will do proper
-stemming for most words that couldn't be stemmed using the rules from the first step.
+    There are two steps for stemming. The first contains most of the rules and is the primary stemming routine and the second one will try to stem the word only if the first one failed to do so - whether it was because there were no rules that could be applied or the rule overlapped the R1 region. The second step contains a few rules that will do proper stemming for most words that couldn't be stemmed using the rules from the first step.

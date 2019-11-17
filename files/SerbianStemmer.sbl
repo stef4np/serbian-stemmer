@@ -1,4 +1,8 @@
-/* Stemmer for Serbian language
+/* Stemmer for Serbian language, based on:
+ *
+ * Ljubesic, Nikola. Pandzic, Ivan. Stemmer for Croatian
+ * http://nlp.ffzg.hr/resources/tools/stemmer-for-croatian/
+ *
  * authors: Stefan Petkovic and Dragan Ivanovic
  * emails: petkovic8 at gmail.com and dragan.ivanovic at uns.ac.rs
  * version: 1.0 (20.04.2019)
@@ -17,8 +21,6 @@ routines (
 externals ( stem )
 
 integers ( p1 p2 p3 sbst )
-
-booleans (notstemmed)
 
 groupings ( v ca sa rg )
 
@@ -138,6 +140,7 @@ define mark_regions as (
     
     $p1 = limit
     $p2 = 0
+    $sbst = 0
     
     do (
         gopast 'r' setmark p2
@@ -2371,10 +2374,8 @@ define stem as (
     do cyr_to_lat
     do prelude
     do mark_regions
-    set notstemmed
     backwards (
         do Step_1
-        do (Step_2 unset notstemmed)
-        do (notstemmed Step_3)
+        do (Step_2 or Step_3)
     )
 )
