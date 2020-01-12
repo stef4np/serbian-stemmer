@@ -33,10 +33,12 @@ Main Routines of Serbian Stemming Algorithm are:
 
 3. Mark Regions
 
-    R1 is:
+    R1 is either:
         a region after the first vowel if there are at least two letters outside of it, otherwise it is a region after the first non-vowel following a vowel,
-        a region after the first "r" if there are at least two letters outside of it, otherwise it is a region after the first non-"r" following an "r". 
-		a whole word if any of the previous two cases isn't fullfiled (typos, acronims).
+        a region after the first "r" if there are at least two letters outside of it, otherwise it is a region after the first non-"r" following an "r".
+
+	Note that every suffix which the stemmer can remove contains at least one vowel, so in the degenerate case of an input which contains no vowels there is nothing to be done.  
+	The Snowball implementation of this stemmer sets <i>R</i>1 to be a zero length region at the end of the word if the input contains no vowels and no "<i>r</i>".
 
     In Serbian language there are some words in which "r" letter is used for syllabification and in such words vowels can appear at the very end - for example word "grmlje".
 
