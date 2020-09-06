@@ -49,7 +49,8 @@ Main Routines of Serbian Stemming Algorithm are:
         "tre|ne|rka" - in this word there is an "r" before the first vowel but there isn't any letters between them which means that "r" isn't used for syllabification and R1 = "nerka".
         "r|ta|njski" - in this word "r" is the first syllable but if we use "tanjski" as R1 it won't left enough letters outside of it, so we need to shrink it down to a region after the first non-"r" following an "r" which is in this case = "anjski".
         "a|vi|on" - similar to the previous case but with a vowel instead of an "r". 
-    R2 isn't really a region, it is more a test routine that is used to check for letters with diacritics and is used later to apply certain rules in stemming. It is used because people these days tend to use letters without diacritics (instead of the proper ones with diacritics) and we need to take this into account also.
+    
+	In this routine no_diacritics flag is set which tells us weather a word contains letters with diacritics or don't, and is used later to apply certain rules in stemming. It is used because people these days tend to use letters without diacritics (instead of the proper ones with diacritics) and we need to take this into account also.
 
 4. Morphological Changes
 
